@@ -31,7 +31,6 @@ class Ring
 	
 	def nearest_node(key)
 		bucket = @hash.call(key)
-#		puts "Key=#{bucket}"
 		nearest_node = @nodes.find {|n| n.index >= bucket}
 		nearest_node = @nodes.min {|n1, n2| n1.index <=> n2.index} if nearest_node.nil?
 		raise "No nodes found" if nearest_node.nil?
