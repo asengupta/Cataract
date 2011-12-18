@@ -1,4 +1,4 @@
-class Node
+class InMemoryNode
 	def initialize
 		@stripes = {}
 	end

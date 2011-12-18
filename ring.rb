@@ -1,5 +1,3 @@
-require './node'
-
 class Ring
 	def initialize(max_nodes, &hash)
 		@hex_digits = 3
