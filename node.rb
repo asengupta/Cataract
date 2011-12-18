@@ -8,6 +8,10 @@ class Node
 		@stripes[key] = value
 	end
 	
+	def get(key)
+		@stripes[key]
+	end
+
 	def remove(key)
 		@stripes.delete(key)
 	end

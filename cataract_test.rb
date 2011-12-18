@@ -22,3 +22,5 @@ r.set("XXXBlah.txtXXX", "haha")
 
 r.add_node(20, Node.new)
 
+puts r.get("XXaBlah.txtXX")
+

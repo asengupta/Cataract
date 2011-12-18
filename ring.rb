@@ -26,14 +26,21 @@ class Ring
 	end
 
 	def set(key, value)
+		nearest_node(key).set(key, value)
+	end
+	
+	def nearest_node(key)
 		bucket = (@hash.call(key) * @max_nodes).to_i
 		current_index = bucket
 		while(@nodes[current_index].nil?)
 			current_index = index(current_index + 1)
-			raise "No nodes to store in" if current_index == bucket
+			raise "No nodes found" if current_index == bucket
 		end
-		@nodes[current_index].set(key, value)
-		puts "Storing in #{current_index} for #{bucket}"
+		@nodes[current_index]
+	end
+	
+	def get(key)
+		nearest_node(key).get(key)
 	end
 end
 
