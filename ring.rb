@@ -1,5 +1,5 @@
 class Ring
-	def initialize(max_nodes, &hash)
+	def initialize(&hash)
 		@hex_digits = 3
 		@nodes = []
 		@hash = hash
@@ -14,11 +14,15 @@ class Ring
 		duplicate_index = @nodes.index {|n| n.index == i}
 		raise "Node replacement not supported yet" if !duplicate_index.nil?
 		node.index = i
-		node.hash = @hash
 		@nodes << node
 		@nodes.sort! {|n1, n2| n1.index <=> n2.index}
 		new_node_index = @nodes.index(node)
-		@nodes[index(new_node_index + 1)].redistribute_to(node)
+		downstream_node_index = index(new_node_index + 1)
+		if (downstream_node_index < new_node_index)
+			@nodes[downstream_node_index].redistribute_overflows_to(node)
+		else
+			@nodes[downstream_node_index].redistribute_normally_to(node)
+		end
 	end
 
 	def set(key, value)
@@ -27,7 +31,7 @@ class Ring
 	
 	def nearest_node(key)
 		bucket = @hash.call(key)
-		puts "Key=#{bucket}"
+#		puts "Key=#{bucket}"
 		nearest_node = @nodes.find {|n| n.index >= bucket}
 		nearest_node = @nodes.min {|n1, n2| n1.index <=> n2.index} if nearest_node.nil?
 		raise "No nodes found" if nearest_node.nil?
