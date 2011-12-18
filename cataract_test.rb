@@ -10,17 +10,17 @@ end
 r = Ring.new(200) {|k| sha_hash(k)}
 
 index = 0
-while (index <= 199)
+while (index <= 1)
 	puts index
 	r.add_node(index, Node.new)
-	index += 40
+	index += 0.2
 end
 
 r.set("XBlah.txtX", "haha")
 r.set("XXaBlah.txtXX", "haha")
 r.set("XXXBlah.txtXXX", "haha")
 
-r.add_node(20, Node.new)
+r.add_node(0.45, Node.new)
 
 puts r.get("XXaBlah.txtXX")
 

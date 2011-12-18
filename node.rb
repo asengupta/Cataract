@@ -5,6 +5,7 @@ class Node
 
 	attr_accessor :hash, :index
 	def set(key, value)
+		puts "Putting data in #{index}"
 		@stripes[key] = value
 	end
 	
