@@ -1,12 +1,18 @@
 class Ring
-	def initialize(&hash)
+	def initialize(replicas = 0, &hash)
 		@hex_digits = 3
 		@nodes = []
 		@hash = hash
+		@replicas = replicas
 	end
 
 	def index(i)
 		i % @nodes.count
+	end
+
+	def remove_node(i)
+		raise "Node index has to exist between 0 and 1." if i < 0 || i > 1
+		@nodes.delete_if {|n| n.index == i}
 	end
 
 	def add_node(i, node)
@@ -26,7 +32,17 @@ class Ring
 	end
 
 	def set(key, value)
-		nearest_node(key).set(key, value)
+		nearest = nearest_node(key)
+		replicate(nearest)
+		nearest.set(key, value)
+	end
+	
+	def replicate(nearest)
+		nearest_index = @nodes.index(nearest)
+		i = 1
+		while (i <= replicas)
+			@nodes[index(nearest_index + i)].set(key, value)
+		end
 	end
 	
 	def nearest_node(key)
