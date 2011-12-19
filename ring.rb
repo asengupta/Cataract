@@ -40,7 +40,7 @@ class Ring
 	def replicate(nearest)
 		nearest_index = @nodes.index(nearest)
 		i = 1
-		while (i <= replicas)
+		while (i <= @replicas)
 			@nodes[index(nearest_index + i)].set(key, value)
 		end
 	end
