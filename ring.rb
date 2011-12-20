@@ -33,15 +33,18 @@ class Ring
 
 	def set(key, value)
 		nearest = nearest_node(key)
-		replicate(nearest)
 		nearest.set(key, value)
+		replicate(nearest, key, value)
 	end
-	
-	def replicate(nearest)
+
+	def replicate(nearest, key, value)
 		nearest_index = @nodes.index(nearest)
 		i = 1
 		while (i <= @replicas)
-			@nodes[index(nearest_index + i)].set(key, value)
+			replica_node = @nodes[index(nearest_index + i)]
+			replica_node.set(key, value)
+			puts "Replicating into #{replica_node.index}"
+			i += 1
 		end
 	end
 	
