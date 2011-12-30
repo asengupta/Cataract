@@ -24,12 +24,20 @@ class Zone
 	end
 	
 	def is_adjacent_to(other)
-		(other.top_left[:y] == self.bottom_right[:y] || other.bottom_right[:y] == self.top_left[:y]) && 
-		!(other.top_left[:x] < self.top_left[:x] && other.bottom_right[:x] < self.top_left[:x] ||
-		  other.top_left[:x] > self.bottom_right[:x] && other.bottom_right[:x] > self.bottom_right[:x]) ||
-		(other.top_left[:x] == self.bottom_right[:x] || other.bottom_right[:x] == self.top_left[:x]) && 
-		!(other.top_left[:y] > self.top_left[:y] && other.bottom_right[:y] > self.top_left[:y] ||
-		  other.top_left[:y] < self.bottom_right[:y] && other.bottom_right[:y] < self.bottom_right[:y])
+		aligned_horizontally =
+		 ((other.top_left[:y] == self.bottom_right[:y] || other.bottom_right[:y] == self.top_left[:y]) && 
+		!(other.top_left[:x] < self.top_left[:x] && other.bottom_right[:x] <= self.top_left[:x] ||
+		  other.top_left[:x] >= self.bottom_right[:x] && other.bottom_right[:x] > self.bottom_right[:x]))
+		
+		aligned_vertically =
+		((other.top_left[:x] == self.bottom_right[:x] || other.bottom_right[:x] == self.top_left[:x]) && 
+		!(other.top_left[:y] > self.top_left[:y] && other.bottom_right[:y] >= self.top_left[:y] ||
+		  other.top_left[:y] <= self.bottom_right[:y] && other.bottom_right[:y] < self.bottom_right[:y]))
+		  
+		puts "Aligned horizontally = #{aligned_horizontally}"
+		puts "Aligned vertically = #{aligned_vertically}"
+
+		aligned_horizontally || aligned_vertically
 	end
 end
 
