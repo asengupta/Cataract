@@ -1,4 +1,5 @@
 class Zone
+	attr_accessor :top_left, :bottom_right
 	def initialize(top_left, bottom_right)
 		@top_left = top_left
 		@bottom_right = bottom_right
@@ -23,6 +24,13 @@ class Zone
 	end
 	
 	def is_adjacent_to(other)
+		(other.top_left[:y] == self.bottom_right[:y] || other.bottom_right[:y] == self.top_left[:y]) && 
+		!(other.top_left[:x] < self.top_left[:x] && other.bottom_right[:x] < self.top_left[:x] ||
+		  other.top_left[:x] > self.bottom_right[:x] && other.bottom_right[:x] > self.bottom_right[:x])
+		  ||
+		(other.top_left[:x] == self.bottom_right[:x] || other.bottom_right[:x] == self.top_left[:x]) && 
+		!(other.top_left[:y] > self.top_left[:y] && other.bottom_right[:y] > self.top_left[:y] ||
+		  other.top_left[:y] < self.bottom_right[:y] && other.bottom_right[:y] < self.bottom_right[:y])
 	end
 end
 
@@ -54,7 +62,7 @@ class ContentAddressableNode
 	end
 
 	def choose_neighbors(potential_neighbors)
-		potential_neighbors.select {|p| self.}
+		@neighbors = potential_neighbors.select {|p| self.is_neighbor_of(p)}
 	end
 
 	def is_neighbor_of(node)
