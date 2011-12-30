@@ -1,5 +1,33 @@
+class Zone
+	def initialize(top_left, bottom_right)
+		@top_left = top_left
+		@bottom_right = bottom_right
+	end
+	
+	def split
+		[
+			Zone.new({:x => @top_left[:x], :y => @top_left[:y]}, {:x => @bottom_right[:x]/2.0, :y => @bottom_right[:y]}),
+			Zone.new({:x => @top_left[:x] + width / 2.0, :y => @top_left[:y]}, {:x => @bottom_right[:x], :y => @bottom_right[:y]}),
+		]
+	end
+	
+	def width
+		(@bottom_right[:x] - @top_left[:x]).abs
+	end
+	
+	def contains(coordinate)
+		@top_left[:x] <= coordinate[:x] && 
+		@top_left[:y] >= coordinate[:y] && 
+		@bottom_right[:x] > coordinate[:x] && 
+		@bottom_right[:y] < coordinate[:y]
+	end
+	
+	def is_adjacent_to(other)
+	end
+end
+
 class ContentAddressableNode
-	attr_accessor :neighbors, :top_left, :bottom_right, :position
+	attr_accessor :neighbors, :zone, :position
 
 	def initialize
 		@neighbors = []
@@ -18,13 +46,23 @@ class ContentAddressableNode
 	end
 	
 	def accomodate(node)
+		split_zones = @zone.split
+		node.zone = split_zones[0]
+		self.zone = split_zones[1]
+		node.choose_neighbors([@neighbors, self].flatten)
+		self.choose_neighbors([@neighbors, node].flatten)
+	end
+
+	def choose_neighbors(potential_neighbors)
+		potential_neighbors.select {|p| self.}
+	end
+
+	def is_neighbor_of(node)
+		@zone.is_adjacent_to(node.zone)
 	end
 
 	def owns(coordinate)
-		@top_left[:x] <= coordinate[:x] && 
-		@top_left[:y] >= coordinate[:y] && 
-		@bottom_right[:x] > coordinate[:x] && 
-		@bottom_right[:y] < coordinate[:y]
+		@zone.contains(coordinate)
 	end
 
 	def distance(p1, p2)
