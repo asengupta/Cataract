@@ -8,7 +8,7 @@ class Zone
 	def split
 		[
 			Zone.new({:x => @top_left[:x], :y => @top_left[:y]}, {:x => @bottom_right[:x]/2.0, :y => @bottom_right[:y]}),
-			Zone.new({:x => @top_left[:x] + width / 2.0, :y => @top_left[:y]}, {:x => @bottom_right[:x], :y => @bottom_right[:y]}),
+			Zone.new({:x => @top_left[:x] + width / 2.0, :y => @top_left[:y]}, {:x => @bottom_right[:x], :y => @bottom_right[:y]})
 		]
 	end
 	
@@ -26,8 +26,7 @@ class Zone
 	def is_adjacent_to(other)
 		(other.top_left[:y] == self.bottom_right[:y] || other.bottom_right[:y] == self.top_left[:y]) && 
 		!(other.top_left[:x] < self.top_left[:x] && other.bottom_right[:x] < self.top_left[:x] ||
-		  other.top_left[:x] > self.bottom_right[:x] && other.bottom_right[:x] > self.bottom_right[:x])
-		  ||
+		  other.top_left[:x] > self.bottom_right[:x] && other.bottom_right[:x] > self.bottom_right[:x]) ||
 		(other.top_left[:x] == self.bottom_right[:x] || other.bottom_right[:x] == self.top_left[:x]) && 
 		!(other.top_left[:y] > self.top_left[:y] && other.bottom_right[:y] > self.top_left[:y] ||
 		  other.top_left[:y] < self.bottom_right[:y] && other.bottom_right[:y] < self.bottom_right[:y])
