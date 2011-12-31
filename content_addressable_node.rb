@@ -92,8 +92,9 @@ class ContentSpace
 	
 	def add(node)
 		if (@nodes.empty?)
-			node.top_left = {:x => 0, :y => 0}
-			node.bottom_right = {:x => 1, :y => 1}
+			node.zone = Zone.new({:x => 0, :y => 0}, {:x => 1, :y => 1})
+			node.position = {:x => 0.5, :y => 0.5}
+			return
 		end
 		bootstrap_node = @nodes[rand(@nodes.count)]
 		@nodes << node
