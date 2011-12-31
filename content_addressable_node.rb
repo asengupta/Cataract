@@ -6,9 +6,13 @@ class Zone
 	end
 	
 	def split
-		[
-			Zone.new({:x => @top_left[:x], :y => @top_left[:y]}, {:x => @bottom_right[:x]/2.0, :y => @bottom_right[:y]}),
+		return [
+			Zone.new({:x => @top_left[:x], :y => @top_left[:y]}, {:x => @top_left[:x] + width / 2.0, :y => @bottom_right[:y]}),
 			Zone.new({:x => @top_left[:x] + width / 2.0, :y => @top_left[:y]}, {:x => @bottom_right[:x], :y => @bottom_right[:y]})
+		] if rand > 0.5
+		[
+			Zone.new({:x => @top_left[:x], :y => @top_left[:y]}, {:x => @bottom_right[:x], :y => @top_left[:y] - height/2.0}),
+			Zone.new({:x => @top_left[:x] - height / 2.0, :y => @top_left[:y]}, {:x => @bottom_right[:x], :y => @bottom_right[:y]})
 		]
 	end
 	
@@ -16,6 +20,10 @@ class Zone
 		(@bottom_right[:x] - @top_left[:x]).abs
 	end
 	
+	def height
+		(@bottom_right[:y] - @top_left[:y]).abs
+	end
+
 	def contains(coordinate)
 		@top_left[:x] <= coordinate[:x] && 
 		@top_left[:y] >= coordinate[:y] && 
