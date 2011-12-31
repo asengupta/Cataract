@@ -55,5 +55,16 @@ class ZoneTest < Test::Unit::TestCase
 		assert_equal(true, z1.is_adjacent_to(z5))
 		assert_equal(true, z1.is_adjacent_to(z6))
 	end
+
+	def test_right_zone_adjacency
+		z1 = Zone.new({:x => 0.2, :y => 0.4}, {:x => 0.4, :y => 0.2})
+		z2 = Zone.new({:x => 0.4, :y => 0.3}, {:x => 0.8, :y => 0.1})
+		z3 = Zone.new({:x => 0.4, :y => 0.6}, {:x => 0.8, :y => 0.3})
+		z4 = Zone.new({:x => 0.4, :y => 0.6}, {:x => 0.8, :y => 0.1})
+
+		assert_equal(true, z1.is_adjacent_to(z2))
+		assert_equal(true, z1.is_adjacent_to(z3))
+		assert_equal(true, z1.is_adjacent_to(z4))
+	end
 end
 
