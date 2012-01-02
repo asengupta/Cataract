@@ -9,6 +9,8 @@ class ContentSpaceTest < Test::Unit::TestCase
 		node2 = ContentAddressableNode.new
 		space.add(node1)
 		space.add(node2)
+		puts node1.inspect
+		puts node2.inspect
 	end
 end
 

@@ -5,6 +5,10 @@ class Zone
 		@bottom_right = bottom_right
 	end
 	
+	def center
+		{:x => (@top_left[:x] + @bottom_right[:x])/2.0, :y => (@top_left[:y] + @bottom_right[:y])/2.0}
+	end
+
 	def split
 		return [
 			Zone.new({:x => @top_left[:x], :y => @top_left[:y]}, {:x => @top_left[:x] + width / 2.0, :y => @bottom_right[:y]}),
@@ -58,6 +62,7 @@ class ContentAddressableNode
 	
 	def bootstrap_using(other)
 		@position = {:x => rand, :y => rand}
+#		puts "New chosen position is #{@position.inspect}"
 		owning_node = other.route_to(@position)
 		owning_node.accomodate(self)
 	end
@@ -65,6 +70,7 @@ class ContentAddressableNode
 	def route_to(coordinate)
 		return self if owns(coordinate)
 		closest_neightbor = @neighbors.min {|n| distance(n.position, coordinate)}
+		closest_neightbor = self if closest_neightbor.nil?
 		closest_neightbor.route_to(coordinate)
 	end
 	
@@ -72,6 +78,8 @@ class ContentAddressableNode
 		split_zones = @zone.split
 		node.zone = split_zones[0]
 		self.zone = split_zones[1]
+		node.position = node.zone.center
+		self.position = self.zone.center
 		node.choose_neighbors([@neighbors, self].flatten)
 		self.choose_neighbors([@neighbors, node].flatten)
 	end
@@ -85,6 +93,7 @@ class ContentAddressableNode
 	end
 
 	def owns(coordinate)
+		puts "Containes = #{@zone.contains(coordinate)}"
 		@zone.contains(coordinate)
 	end
 
@@ -100,9 +109,10 @@ class ContentSpace
 	
 	def add(node)
 		if (@nodes.empty?)
-			node.zone = Zone.new({:x => 0, :y => 0}, {:x => 1, :y => 1})
+			node.zone = Zone.new({:x => 0, :y => 1}, {:x => 1, :y => 0})
 			node.position = {:x => 0.5, :y => 0.5}
-			return
+			@nodes << node
+ 			return
 		end
 		bootstrap_node = @nodes[rand(@nodes.count)]
 		@nodes << node
