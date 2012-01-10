@@ -16,7 +16,7 @@ class Zone
 		] if rand > 0.5
 		[
 			Zone.new({:x => @top_left[:x], :y => @top_left[:y]}, {:x => @bottom_right[:x], :y => (@top_left[:y] + @bottom_right[:y])/2.0}),
-			Zone.new({:x => (@top_left[:x] + @bottom_right[:x]) / 2.0, :y => @top_left[:y]}, {:x => @bottom_right[:x], :y => @bottom_right[:y]})
+			Zone.new({:x => @top_left[:x], :y => (@top_left[:y] + @bottom_right[:y])/2.0}, {:x => @bottom_right[:x], :y => @bottom_right[:y]})
 		]
 	end
 	
@@ -31,11 +31,13 @@ class Zone
 	def contains(coordinate)
 		@top_left[:x] <= coordinate[:x] && 
 		@top_left[:y] >= coordinate[:y] && 
-		@bottom_right[:x] > coordinate[:x] && 
-		@bottom_right[:y] < coordinate[:y]
+		@bottom_right[:x] >= coordinate[:x] && 
+		@bottom_right[:y] <= coordinate[:y]
 	end
 	
 	def is_adjacent_to(other)
+		puts self.inspect
+		puts other.inspect
 		aligned_horizontally =
 		 ((other.top_left[:y] == self.bottom_right[:y] || other.bottom_right[:y] == self.top_left[:y]) && 
 		!(other.top_left[:x] < self.top_left[:x] && other.bottom_right[:x] <= self.top_left[:x] ||
@@ -46,8 +48,8 @@ class Zone
 		!(other.top_left[:y] > self.top_left[:y] && other.bottom_right[:y] >= self.top_left[:y] ||
 		  other.top_left[:y] <= self.bottom_right[:y] && other.bottom_right[:y] < self.bottom_right[:y]))
 		  
-#		puts "Aligned horizontally = #{aligned_horizontally}"
-#		puts "Aligned vertically = #{aligned_vertically}"
+		puts "Aligned horizontally = #{aligned_horizontally}"
+		puts "Aligned vertically = #{aligned_vertically}"
 
 		aligned_horizontally || aligned_vertically
 	end
@@ -62,13 +64,14 @@ class ContentAddressableNode
 	
 	def bootstrap_using(other)
 		@position = {:x => rand, :y => rand}
-#		puts "New chosen position is #{@position.inspect}"
+		puts "New chosen position is #{@position.inspect}"
 		owning_node = other.route_to(@position)
 		owning_node.accomodate(self)
 	end
 	
 	def route_to(coordinate)
 		return self if owns(coordinate)
+#		puts @neighbors.count
 		closest_neightbor = @neighbors.min {|n| distance(n.position, coordinate)}
 		closest_neightbor = self if closest_neightbor.nil?
 		closest_neightbor.route_to(coordinate)
@@ -80,11 +83,17 @@ class ContentAddressableNode
 		self.zone = split_zones[1]
 		node.position = node.zone.center
 		self.position = self.zone.center
+		puts "Neighbors of accommodater=#{@neighbors.count}"
 		node.choose_neighbors([@neighbors, self].flatten)
 		self.choose_neighbors([@neighbors, node].flatten)
+		puts "Neighbor counts start"
+		puts node.neighbors.count
+		puts self.neighbors.count
+		puts "Neighbor counts end"
 	end
 
 	def choose_neighbors(potential_neighbors)
+		puts "Choosing from #{potential_neighbors.count}"
 		@neighbors = potential_neighbors.select {|p| self.is_neighbor_of(p)}
 	end
 
@@ -93,7 +102,7 @@ class ContentAddressableNode
 	end
 
 	def owns(coordinate)
-		puts "Containes = #{@zone.contains(coordinate)}"
+#		puts "Containes = #{@zone.contains(coordinate)}"
 		@zone.contains(coordinate)
 	end
 
