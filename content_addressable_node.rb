@@ -33,8 +33,6 @@ class Zone
 	end
 	
 	def is_adjacent_to(other)
-		puts self.inspect
-		puts other.inspect
 		aligned_horizontally =
 		 ((other.top_left[:y] == self.bottom_right[:y] || other.bottom_right[:y] == self.top_left[:y]) && 
 		!(other.top_left[:x] < self.top_left[:x] && other.bottom_right[:x] <= self.top_left[:x] ||
@@ -60,39 +58,35 @@ class ContentAddressableNode
 	end
 	
 	def bootstrap_using(other)
-#		puts "Bootstrapping using #{other.zone.inspect}"
 		@position = {:x => rand, :y => rand}
-		puts "New chosen position is #{@position.inspect}"
+#		puts "New chosen position is #{@position.inspect}"
 		owning_node = other.route_to(@position)
 		owning_node.accomodate(self)
 	end
 	
 	def route_to(coordinate)
-#		puts "Routing to #{coordinate} through #{self.zone.inspect}"
 		return self if owns(coordinate)
-#		puts @neighbors.count
 		closest_neightbor = @neighbors.min {|n| distance(n.position, coordinate)}
 		closest_neightbor = self if closest_neightbor.nil?
 		closest_neightbor.route_to(coordinate)
 	end
 	
 	def accomodate(node)
-		split_zones = @zone.split
 		node.zone = split_zones[0]
 		self.zone = split_zones[1]
 		node.position = node.zone.center
 		self.position = self.zone.center
-		puts "Neighbors of accommodater=#{@neighbors.count}"
+#		puts "Neighbors of accommodater=#{@neighbors.count}"
 		node.choose_neighbors([@neighbors, self].flatten)
 		self.choose_neighbors([@neighbors, node].flatten)
-		puts "Neighbor counts start"
-		puts node.neighbors.count
-		puts self.neighbors.count
-		puts "Neighbor counts end"
+#		puts "Neighbor counts start"
+#		puts node.neighbors.count
+#		puts self.neighbors.count
+#		puts "Neighbor counts end"
 	end
 
 	def choose_neighbors(potential_neighbors)
-		puts "Choosing from #{potential_neighbors.count}"
+#		puts "Choosing from #{potential_neighbors.count}"
 		@neighbors = potential_neighbors.select {|p| self.is_neighbor_of(p)}
 	end
 
@@ -116,7 +110,6 @@ class ContentSpace
 	end
 	
 	def add(node)
-		puts "Adding node"
 		if (@nodes.empty?)
 			node.zone = Zone.new({:x => 0, :y => 1}, {:x => 1, :y => 0})
 			node.position = {:x => 0.5, :y => 0.5}
@@ -126,7 +119,6 @@ class ContentSpace
 		bootstrap_node = @nodes[rand(@nodes.count)]
 		@nodes << node
 		node.bootstrap_using(bootstrap_node)
-		@nodes.each {|n| puts n.zone.inspect}
 	end
 end
 
