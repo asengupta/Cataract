@@ -1,4 +1,4 @@
-require './content_addressable_node'
+require './content_space'
 require 'rubygems'
 require 'test/unit'
 
