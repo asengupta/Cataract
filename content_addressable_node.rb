@@ -29,10 +29,7 @@ class Zone
 	end
 
 	def contains(coordinate)
-		@top_left[:x] <= coordinate[:x] && 
-		@top_left[:y] >= coordinate[:y] && 
-		@bottom_right[:x] >= coordinate[:x] && 
-		@bottom_right[:y] <= coordinate[:y]
+		@top_left[:x] <= coordinate[:x] && @top_left[:y] >= coordinate[:y] && @bottom_right[:x] >= coordinate[:x] && @bottom_right[:y] <= coordinate[:y]
 	end
 	
 	def is_adjacent_to(other)
@@ -63,6 +60,7 @@ class ContentAddressableNode
 	end
 	
 	def bootstrap_using(other)
+#		puts "Bootstrapping using #{other.zone.inspect}"
 		@position = {:x => rand, :y => rand}
 		puts "New chosen position is #{@position.inspect}"
 		owning_node = other.route_to(@position)
@@ -70,6 +68,7 @@ class ContentAddressableNode
 	end
 	
 	def route_to(coordinate)
+#		puts "Routing to #{coordinate} through #{self.zone.inspect}"
 		return self if owns(coordinate)
 #		puts @neighbors.count
 		closest_neightbor = @neighbors.min {|n| distance(n.position, coordinate)}
@@ -117,6 +116,7 @@ class ContentSpace
 	end
 	
 	def add(node)
+		puts "Adding node"
 		if (@nodes.empty?)
 			node.zone = Zone.new({:x => 0, :y => 1}, {:x => 1, :y => 0})
 			node.position = {:x => 0.5, :y => 0.5}
@@ -126,6 +126,7 @@ class ContentSpace
 		bootstrap_node = @nodes[rand(@nodes.count)]
 		@nodes << node
 		node.bootstrap_using(bootstrap_node)
+		@nodes.each {|n| puts n.zone.inspect}
 	end
 end
 
