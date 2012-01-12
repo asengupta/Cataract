@@ -43,9 +43,6 @@ class Zone
 		!(other.top_left[:y] > self.top_left[:y] && other.bottom_right[:y] >= self.top_left[:y] ||
 		  other.top_left[:y] <= self.bottom_right[:y] && other.bottom_right[:y] < self.bottom_right[:y]))
 		  
-		puts "Aligned horizontally = #{aligned_horizontally}"
-		puts "Aligned vertically = #{aligned_vertically}"
-
 		aligned_horizontally || aligned_vertically
 	end
 end
@@ -72,6 +69,7 @@ class ContentAddressableNode
 	end
 	
 	def accomodate(node)
+		split_zones = @zone.split
 		node.zone = split_zones[0]
 		self.zone = split_zones[1]
 		node.position = node.zone.center

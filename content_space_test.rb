@@ -10,18 +10,18 @@ class ContentSpaceTest < Test::Unit::TestCase
 		n2 = ContentAddressableNode.new
 		n3 = ContentAddressableNode.new
 		n4 = ContentAddressableNode.new
-		begin
+#		begin
 			space.add(n1)
 			space.add(n2)
 			space.add(n3)
 			space.add(n4)
-		rescue
-#			puts n1.inspect
-#			puts n2.inspect
-#			puts n3.inspect
-#			puts n4.inspect
-		end
-#		2.times { nodes << ContentAddressableNode.new}
+#		rescue
+##			puts n1.inspect
+##			puts n2.inspect
+##			puts n3.inspect
+##			puts n4.inspect
+#		end
+#		30.times { nodes << ContentAddressableNode.new}
 #		nodes.each {|n| space.add(n)}
 	end
 end
