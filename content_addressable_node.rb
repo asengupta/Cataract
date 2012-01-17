@@ -33,14 +33,18 @@ class ContentAddressableNode
 		self.zone = split_zones[1]
 		node.position = node.zone.center
 		self.position = self.zone.center
+		node.neighbors.each do |n|
+			n.adjust(self)
+			n.adjust(node)
+		end
+		self.neighbors.each do |n|
+			n.adjust(self)
+			n.adjust(node)
+		end
 		puts "Choosing from #{@neighbors.count + 1} neighbors"
 		node.choose_neighbors([@neighbors, self].flatten)
 		puts "Now choosing from #{@neighbors.count + 1} neighbors"
 		self.choose_neighbors([@neighbors, node].flatten)
-		@neighbors.each do |n|
-			n.adjust(self)
-			n.adjust(node)
-		end
 	end
 
 	def adjust(neighbor)
