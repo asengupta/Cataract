@@ -2,6 +2,12 @@ require './zone'
 class ContentAddressableNode
 	attr_accessor :neighbors, :zone, :position
 
+	def to_s
+		@zone.inspect
+		neighbor_list = @neighbors.inject("Neighbors") {|all, n| all + n.zone.inspect}
+		@zone.inspect + neighbor_list
+	end
+	
 	def initialize
 		@neighbors = []
 	end
@@ -27,10 +33,21 @@ class ContentAddressableNode
 		self.zone = split_zones[1]
 		node.position = node.zone.center
 		self.position = self.zone.center
+		puts "Choosing from #{@neighbors.count + 1} neighbors"
 		node.choose_neighbors([@neighbors, self].flatten)
+		puts "Now choosing from #{@neighbors.count + 1} neighbors"
 		self.choose_neighbors([@neighbors, node].flatten)
+		@neighbors.each do |n|
+			n.adjust(self)
+			n.adjust(node)
+		end
 	end
 
+	def adjust(neighbor)
+		@neighbors.delete(neighbor) if !neighbor.is_neighbor_of(self)
+		@neighbors << neighbor if neighbor.is_neighbor_of(self) && @neighbors.index(neighbor).nil?
+	end
+	
 	def choose_neighbors(potential_neighbors)
 		@neighbors = potential_neighbors.select {|p| p.is_neighbor_of(self)}
 	end
