@@ -8,12 +8,13 @@ class ContentAddressableNode
 	
 	def bootstrap_using(other)
 		@position = {:x => rand, :y => rand}
-#		puts "New chosen position is #{@position.inspect}"
+		puts "New chosen position is #{@position.inspect}"
 		owning_node = other.route_to(@position)
 		owning_node.accomodate(self)
 	end
 	
 	def route_to(coordinate)
+		puts "Routing #{coordinate.inspect} through #{self.zone.inspect}"
 		return self if owns(coordinate)
 		closest_neightbor = @neighbors.min {|n| distance(n.position, coordinate)}
 		closest_neightbor = self if closest_neightbor.nil?
@@ -31,7 +32,7 @@ class ContentAddressableNode
 	end
 
 	def choose_neighbors(potential_neighbors)
-		@neighbors = potential_neighbors.select {|p| self.is_neighbor_of(p)}
+		@neighbors = potential_neighbors.select {|p| p.is_neighbor_of(self)}
 	end
 
 	def is_neighbor_of(node)
