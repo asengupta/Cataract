@@ -3,7 +3,6 @@ class ContentAddressableNode
 	attr_accessor :neighbors, :zone, :position
 
 	def to_s
-		@zone.inspect
 		neighbor_list = @neighbors.inject("Neighbors") {|all, n| all + n.zone.inspect}
 		@zone.inspect + neighbor_list
 	end
@@ -14,17 +13,19 @@ class ContentAddressableNode
 	
 	def bootstrap_using(other)
 		@position = {:x => rand, :y => rand}
-		puts "New chosen position is #{@position.inspect}"
+#		puts "New chosen position is #{@position.inspect}"
 		owning_node = other.route_to(@position)
 		owning_node.accomodate(self)
 	end
 	
 	def route_to(coordinate)
-		puts "Routing #{coordinate.inspect} through #{self.zone.inspect}"
+#		puts "Routing #{coordinate.inspect} through #{self.zone.inspect}"
+#		puts "Num neighbors = #{@neighbors.count}"
 		return self if owns(coordinate)
-		closest_neightbor = @neighbors.min {|n| distance(n.position, coordinate)}
-		closest_neightbor = self if closest_neightbor.nil?
-		closest_neightbor.route_to(coordinate)
+		closest_neighbor = @neighbors.min_by {|n| distance(n.position, coordinate)}
+#		@neighbors.each {|n| p "#{distance(n.position, coordinate)} is between #{coordinate} and #{n}"}
+#		p "Choosing #{closest_neighbor}"
+		closest_neighbor.route_to(coordinate)
 	end
 	
 	def accomodate(node)
@@ -33,17 +34,17 @@ class ContentAddressableNode
 		self.zone = split_zones[1]
 		node.position = node.zone.center
 		self.position = self.zone.center
-		node.neighbors.each do |n|
+#		node.neighbors.each do |n|
+#			n.adjust(self)
+#			n.adjust(node)
+#		end
+		@neighbors.each do |n|
 			n.adjust(self)
 			n.adjust(node)
 		end
-		self.neighbors.each do |n|
-			n.adjust(self)
-			n.adjust(node)
-		end
-		puts "Choosing from #{@neighbors.count + 1} neighbors"
+#		puts "Choosing from #{@neighbors.count} neighbors"
 		node.choose_neighbors([@neighbors, self].flatten)
-		puts "Now choosing from #{@neighbors.count + 1} neighbors"
+#		puts "Now choosing from #{@neighbors.count} neighbors"
 		self.choose_neighbors([@neighbors, node].flatten)
 	end
 

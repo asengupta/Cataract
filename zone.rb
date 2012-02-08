@@ -29,7 +29,7 @@ class Zone
 	end
 
 	def contains(coordinate)
-		puts "Does #{self.inspect} contain #{coordinate.inspect}??"
+#		puts "Does #{self.inspect} contain #{coordinate.inspect}??"
 		@top_left[:x] <= coordinate[:x] && @top_left[:y] >= coordinate[:y] && @bottom_right[:x] >= coordinate[:x] && @bottom_right[:y] <= coordinate[:y]
 	end
 	
