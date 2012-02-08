@@ -19,7 +19,7 @@ class ContentAddressableNode
 	end
 	
 	def route_to(coordinate)
-#		puts "Routing #{coordinate.inspect} through #{self.zone.inspect}"
+		puts "Routing #{coordinate.inspect} through #{self.zone.inspect}"
 #		puts "Num neighbors = #{@neighbors.count}"
 		return self if owns(coordinate)
 		closest_neighbor = @neighbors.min_by {|n| distance(n.position, coordinate)}
@@ -34,10 +34,6 @@ class ContentAddressableNode
 		self.zone = split_zones[1]
 		node.position = node.zone.center
 		self.position = self.zone.center
-#		node.neighbors.each do |n|
-#			n.adjust(self)
-#			n.adjust(node)
-#		end
 		@neighbors.each do |n|
 			n.adjust(self)
 			n.adjust(node)
